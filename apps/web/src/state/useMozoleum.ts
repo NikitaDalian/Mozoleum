@@ -11,7 +11,7 @@ import {
 import { ls, lsRaw, save } from '../lib/storage';
 import { ease } from '../lib/anim';
 import { fetchMotto } from '../lib/api';
-import { cardBlob, fileSafeName } from '../lib/card';
+import { getCardBlob, fileSafeName } from '../lib/card';
 
 export type Screen = 'intro' | 'generator' | 'hall';
 
@@ -408,7 +408,7 @@ export function useMozoleum() {
     const c = callusRef.current;
     if (!c) return;
     try {
-      const b = await cardBlob(c, configRef.current.styleKey, signature);
+      const b = await getCardBlob(c, configRef.current.styleKey, signature);
       const a = document.createElement('a');
       a.href = URL.createObjectURL(b);
       a.download = fileSafeName(c.name.folk) + '.png';
@@ -426,7 +426,7 @@ export function useMozoleum() {
     const c = callusRef.current;
     if (!c) return;
     try {
-      const blob = await cardBlob(c, configRef.current.styleKey, signature);
+      const blob = await getCardBlob(c, configRef.current.styleKey, signature);
       const file = new File([blob], 'mozoleum.png', { type: 'image/png' });
       const nav = navigator as Navigator & { canShare?: (d: unknown) => boolean };
       if (nav.canShare && nav.canShare({ files: [file] })) {

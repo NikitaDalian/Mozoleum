@@ -1,4 +1,26 @@
 import { buildExportSVG, type Callus } from '@mozoleum/engine';
+import { callusImageUrl } from './api';
+
+/**
+ * Get the best available PNG for a callus card:
+ *  1. the server renderer (pixel-perfect brand fonts), if reachable;
+ *  2. otherwise the in-browser canvas fallback (system serif/sans).
+ * This keeps downloads working offline / on a static host while giving
+ * pixel-perfect fonts whenever the API is available.
+ */
+export async function getCardBlob(callus: Callus, styleKey: string, signature: string): Promise<Blob> {
+  try {
+    const res = await fetch(callusImageUrl(callus.originId, callus.seed, styleKey, signature));
+    const ct = res.headers.get('content-type') || '';
+    if (res.ok && ct.includes('image/png')) {
+      const blob = await res.blob();
+      if (blob.size > 1000) return blob;
+    }
+  } catch {
+    /* server unreachable — fall back to client render */
+  }
+  return cardBlob(callus, styleKey, signature);
+}
 
 /**
  * Render the export-card SVG to a PNG Blob in the browser (canvas). Fonts fall
