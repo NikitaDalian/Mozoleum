@@ -220,7 +220,7 @@ export function Generator({ store }: { store: MozoleumStore }) {
 
       <main style={{ maxWidth: 1200, margin: '0 auto', padding: 28, display: 'flex', gap: 32, alignItems: 'flex-start', flexWrap: 'wrap' }}>
         {/* SHOWCASE */}
-        <section style={{ flex: '1 1 460px', minWidth: 320, display: 'flex', flexDirection: 'column', gap: 18 }}>
+        <section id="mz-showcase" style={{ flex: '1 1 460px', minWidth: 320, display: 'flex', flexDirection: 'column', gap: 18 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14, minHeight: 24 }}>
             <span style={{ flex: 1, height: 1, background: 'linear-gradient(90deg,transparent,rgba(212,175,55,.4))' }} />
             <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: rarityColor }}>{rarityLabel}</span>

@@ -247,6 +247,19 @@ export function useMozoleum() {
       const dur = reason === 'init' ? 820 : 720;
       stopFx();
       setGenerating(true);
+      // On a narrow (stacked) layout the showcase is above the controls, so a
+      // user-triggered roll plays off-screen. Scroll it into view so the
+      // "Лепка мозоли" animation + reveal are actually seen.
+      if (
+        (reason === 'reroll' || reason === 'random' || reason === 'param') &&
+        typeof window !== 'undefined' &&
+        window.innerWidth < 900
+      ) {
+        setTimeout(
+          () => document.getElementById('mz-showcase')?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+          0,
+        );
+      }
       setGenProgress(0);
       setCelebrate(null);
       setRevealFx(0);
