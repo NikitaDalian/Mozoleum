@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;background:#100f0d}
+  ::selection{background:#d4af37;color:#100f0d}
+  select{outline:none}
+  select:focus{border-color:#d4af37 !important}
+</style>
+</helmet>
+<div style="font-family:'Space Grotesk',system-ui,sans-serif;color:#efe7d4">
+
+  <!-- ====================== ИНТРО / ЗАНАВЕС ====================== -->
+  <div style="{{ introStyle }}">
+    <div style="position:relative;min-height:100vh;overflow:hidden;background:repeating-linear-gradient(45deg, rgba(247,228,168,.016) 0 1px, transparent 1px 6px), repeating-linear-gradient(-45deg, rgba(0,0,0,.05) 0 1px, transparent 1px 6px), radial-gradient(1000px 620px at 50% 38%, #241a14 0%, #110d0a 62%, #0a0807 100%);display:flex;align-items:center;justify-content:center">
+      <!-- сцена / меню -->
+      <div style="position:relative;z-index:10;text-align:center;padding:40px 24px">
+        <div style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:6px;color:#caa23d;text-transform:uppercase;margin-bottom:18px">Аукционный дом · с MMXXV</div>
+        <div style="font-family:'Playfair Display',serif;font-weight:800;font-size:clamp(54px,11vw,124px);letter-spacing:6px;line-height:.96;color:#f3e7c8;text-shadow:0 6px 40px rgba(212,175,55,.25)">МОЗОЛЕУМ</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin:14px auto 0;max-width:520px">
+          <span style="flex:1;height:1px;background:linear-gradient(90deg,transparent,#caa23d)"></span>
+          <span style="color:#caa23d;font-size:14px">✦</span>
+          <span style="flex:1;height:1px;background:linear-gradient(270deg,transparent,#caa23d)"></span>
+        </div>
+        <div style="font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(16px,2.4vw,22px);color:#cdc3aa;margin-top:14px">Генератор почётных мозолей · торги открыты</div>
+        <div style="{{ introMenuStyle }}">
+          <button onClick="{{ gotoGenerator }}" style="background:linear-gradient(180deg,#f6dc7e 0%,#e8c252 46%,#c89c36 100%);color:#1a1208;border:1px solid #b8902f;border-radius:11px;padding:18px 34px;font-family:'Space Grotesk';font-size:16px;font-weight:700;letter-spacing:2px;cursor:pointer;box-shadow:0 14px 34px rgba(212,175,55,.32), inset 0 1px 0 rgba(255,250,228,.75), inset 0 -3px 7px rgba(120,86,16,.4);text-transform:uppercase;transition:transform .12s cubic-bezier(.3,.7,.3,1), box-shadow .16s ease, filter .16s ease" style-hover="filter:brightness(1.05);transform:translateY(-2px);box-shadow:0 20px 42px rgba(212,175,55,.46), inset 0 1px 0 rgba(255,250,228,.75)" style-active="transform:translateY(2px) scale(.99);box-shadow:0 6px 16px rgba(212,175,55,.3), inset 0 3px 8px rgba(120,86,16,.55)">Войти в генерацию</button>
+          <button onClick="{{ gotoHall }}" style="background:linear-gradient(180deg,rgba(212,175,55,.08),rgba(212,175,55,.02));color:#e8d9b4;border:1.5px solid #caa23d;border-radius:11px;padding:18px 34px;font-family:'Space Grotesk';font-size:16px;font-weight:600;letter-spacing:2px;cursor:pointer;text-transform:uppercase;transition:transform .12s cubic-bezier(.3,.7,.3,1), background .15s ease" style-hover="background:linear-gradient(180deg,rgba(212,175,55,.2),rgba(212,175,55,.07));transform:translateY(-2px)" style-active="transform:translateY(1px) scale(.99)">Аукционный зал</button>
+        </div>
+      </div>
+
+      <!-- ЛАМБРЕКЕН -->
+      <div style="position:absolute;top:0;left:0;right:0;z-index:24" dangerouslySetInnerHTML="{{ valanceHtml }}"></div>
+      <!-- ШТОРЫ -->
+      <div style="{{ curtainLeft }}"></div>
+      <div style="{{ curtainRight }}"></div>
+      <!-- пропустить -->
+      <button onClick="{{ skipIntro }}" style="position:absolute;right:18px;bottom:16px;z-index:30;background:transparent;border:1px solid rgba(212,175,55,.3);color:#9a9078;border-radius:999px;padding:8px 16px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1px;cursor:pointer">раздвинуть занавес ▸</button>
+    </div>
+  </div>
+
+  <!-- ====================== ГЕНЕРАТОР ====================== -->
+  <div style="{{ genScreenStyle }}">
+    <div style="min-height:100vh;background:repeating-linear-gradient(45deg, rgba(247,228,168,.014) 0 1px, transparent 1px 6px), repeating-linear-gradient(-45deg, rgba(0,0,0,.045) 0 1px, transparent 1px 6px), radial-gradient(1200px 700px at 50% -10%, #1c1812 0%, #100f0d 60%);padding:0 0 64px">
+      <!-- ШАПКА -->
+      <header style="max-width:1200px;margin:0 auto;padding:20px 28px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;border-bottom:1px solid rgba(212,175,55,.16)">
+        <div onClick="{{ gotoIntro }}" style="display:flex;align-items:center;gap:14px;cursor:pointer">
+          <div style="width:44px;height:44px;filter:drop-shadow(0 2px 5px rgba(0,0,0,.5))" dangerouslySetInnerHTML="{{ monogramHtml }}"></div>
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <div style="font-family:'Playfair Display',serif;font-size:23px;font-weight:700;letter-spacing:5px;color:#f3e7c8;line-height:1">МОЗОЛЕУМ</div>
+            <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;color:#8a8170;text-transform:uppercase">сгенерировано: {{ count }}</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <button onClick="{{ gotoHall }}" style="background:transparent;border:1px solid rgba(212,175,55,.3);color:#e3d4a4;border-radius:999px;padding:9px 15px;font-family:'Space Grotesk';font-size:13px;font-weight:600;cursor:pointer" style-hover="background:rgba(212,175,55,.08)">Зал</button>
+          <div style="display:flex;align-items:center;gap:8px;background:#1b1711;border:1px solid rgba(212,175,55,.35);border-radius:999px;padding:9px 15px">
+            <span style="color:#d4af37;font-size:15px">₥</span>
+            <span style="font-family:'Space Mono',monospace;font-size:14px;color:#f3e7c8;font-weight:700">{{ balance }}</span>
+          </div>
+          <button onClick="{{ openShop }}" style="background:transparent;border:1px solid rgba(212,175,55,.35);color:#d4af37;border-radius:999px;padding:9px 15px;font-family:'Space Grotesk';font-size:13px;font-weight:600;cursor:pointer" style-hover="background:rgba(212,175,55,.1)">Магазин</button>
+        </div>
+      </header>
+
+      <main style="max-width:1200px;margin:0 auto;padding:28px;display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap">
+        <!-- ВИТРИНА -->
+        <section style="flex:1 1 460px;min-width:320px;display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;align-items:center;justify-content:center;gap:14px;min-height:24px">
+            <span style="flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(212,175,55,.4))"></span>
+            <span style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:{{ rarityColor }}">{{ rarityLabel }}</span>
+            <span style="font-size:14px;letter-spacing:2px;color:{{ rarityColor }}">{{ starsLit }}<span style="opacity:.28">{{ starsDim }}</span></span>
+            <span style="flex:1;height:1px;background:linear-gradient(270deg,transparent,rgba(212,175,55,.4))"></span>
+          </div>
+
+          <div style="{{ caseStyle }}">
+            <div style="position:relative;border-radius:3px;overflow:hidden;background:#0d0c0a;aspect-ratio:1/1">
+              <div style="position:absolute;inset:0;z-index:1" dangerouslySetInnerHTML="{{ artHtml }}"></div>
+              <div style="position:absolute;inset:0;z-index:3;pointer-events:none" dangerouslySetInnerHTML="{{ frameHtml }}"></div>
+              <div style="{{ fxStyle }}"></div>
+              <div style="{{ nameplateStyle }}"><span style="font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:2.5px;color:#b89a52;text-transform:uppercase">Локация</span><span style="width:1px;height:14px;background:rgba(212,175,55,.4)"></span><span style="font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:#f6ead0;letter-spacing:.8px;text-transform:uppercase">{{ locUpper }}</span></div>
+              <div style="{{ genStyle }}">
+                <svg width="120" height="120" viewBox="0 0 120 120" style="overflow:visible">
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#3a342a" stroke-width="1"/>
+                  <g style="{{ genSpin }}">
+                    <circle cx="60" cy="60" r="50" fill="none" stroke="#d4af37" stroke-width="2" stroke-dasharray="62 252" stroke-linecap="round"/>
+                    <circle cx="60" cy="60" r="34" fill="none" stroke="#caa23d" stroke-width="1.5" stroke-dasharray="30 184" stroke-linecap="round"/>
+                  </g>
+                  <line x1="60" y1="6" x2="60" y2="114" stroke="#d4af37" stroke-width=".5" stroke-opacity=".4"/>
+                  <line x1="6" y1="60" x2="114" y2="60" stroke="#d4af37" stroke-width=".5" stroke-opacity=".4"/>
+                  <circle cx="60" cy="60" r="3" fill="#d4af37"/>
+                </svg>
+                <div style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:4px;color:#d4af37;text-transform:uppercase">Лепка мозоли</div>
+                <div style="width:170px;height:4px;background:#2a251d;border-radius:2px;overflow:hidden;position:relative">
+                  <div style="{{ genBar }}"></div>
+                </div>
+              </div>
+            </div>
+            <div style="{{ sealWrapStyle }}" dangerouslySetInnerHTML="{{ sealHtml }}"></div>
+          </div>
+
+          <!-- ТАБЛИЧКА -->
+          <sc-if value="{{ hasCallus }}" hint-placeholder-val="{{ true }}">
+            <div style="background:linear-gradient(165deg,#1d1810,#161209);border:1px solid rgba(212,175,55,.22);border-radius:5px;padding:22px 26px;position:relative">
+              <div style="position:absolute;top:10px;left:12px;color:rgba(212,175,55,.35);font-size:13px">✦</div>
+              <div style="position:absolute;top:10px;right:12px;color:rgba(212,175,55,.35);font-size:13px">✦</div>
+              <div style="text-align:center;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;color:#8a8170;text-transform:uppercase;margin-bottom:8px">Лот №{{ lotNo }} · {{ certTitle }}</div>
+              <div style="text-align:center;font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:#f3e7c8;line-height:1.15">«{{ folk }}»</div>
+              <div style="text-align:center;font-family:'Playfair Display',serif;font-style:italic;font-size:16px;color:#caa23d;margin-top:4px">{{ latin }}</div>
+              <div style="height:1px;background:rgba(212,175,55,.18);margin:14px 0"></div>
+              <div style="display:flex;flex-direction:column;gap:7px;font-size:13.5px;color:#cdc3aa;line-height:1.45">
+                <div><span style="color:#8a8170;font-family:'Space Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:1px">Происхождение&nbsp;</span>{{ act }}</div>
+                <div><span style="color:#8a8170;font-family:'Space Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:1px">Локация&nbsp;</span>{{ loc }}</div>
+                <div><span style="color:#8a8170;font-family:'Space Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:1px">Подвид&nbsp;</span>{{ sub }} · {{ stage }} · {{ degree }} ст. · в строю с {{ year }}</div>
+              </div>
+              <div style="text-align:center;font-family:'Playfair Display',serif;font-style:italic;font-size:16px;color:#e3d4a4;margin-top:14px">«{{ motto }}»</div>
+              <sc-if value="{{ hasSig }}" hint-placeholder-val="{{ false }}">
+                <div style="text-align:right;font-family:'Playfair Display',serif;font-style:italic;font-size:14px;color:#9a9078;margin-top:8px">— {{ signature }}</div>
+              </sc-if>
+            </div>
+          </sc-if>
+        </section>
+
+        <!-- ПАНЕЛЬ -->
+        <aside style="flex:1 1 340px;min-width:300px;display:flex;flex-direction:column;gap:16px">
+          <div style="background:#16130e;border:1px solid rgba(212,175,55,.16);border-radius:8px;padding:20px;display:flex;flex-direction:column;gap:16px">
+            <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#8a8170">Чем заработана мозоль</div>
+            <label style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8a8170">Вид деятельности</span>
+              <select value="{{ currentOrigin }}" onChange="{{ onOrigin }}" style="background:#0e0d0b;color:#efe7d4;border:1px solid rgba(212,175,55,.22);border-radius:5px;padding:11px 12px;font-family:'Space Grotesk';font-size:13.5px;cursor:pointer">
+                <sc-for list="{{ originGroups }}" as="grp" hint-placeholder-count="5">
+                  <optgroup label="{{ grp.label }}">
+                    <sc-for list="{{ grp.items }}" as="o" hint-placeholder-count="6"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+                  </optgroup>
+                </sc-for>
+              </select>
+            </label>
+            <div style="font-family:'Space Mono',monospace;font-size:10px;color:#6f6757;line-height:1.5;margin-top:-6px">Имя, локацию, стадию и редкость экспонат получает сам — это гача. Крутите «Перекатить».</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8a8170">Стиль рендера</span>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <sc-for list="{{ styleChips }}" as="chip" hint-placeholder-count="4">
+                  <button onClick="{{ chip.onClick }}" style="{{ chip.style }}" style-hover="border-color:#f0d77a;box-shadow:0 5px 16px rgba(212,175,55,.30);transform:translateY(-2px)" style-active="transform:translateY(0) scale(.97)">{{ chip.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+
+          <button onClick="{{ reroll }}" style="background:linear-gradient(180deg,#f6dc7e 0%,#e8c252 46%,#c89c36 100%);color:#1a1208;border:1px solid #b8902f;border-radius:10px;padding:18px;font-family:'Space Grotesk';font-size:17px;font-weight:700;letter-spacing:4px;cursor:pointer;box-shadow:0 12px 28px rgba(212,175,55,.30), inset 0 1px 0 rgba(255,250,228,.75), inset 0 -3px 7px rgba(120,86,16,.4);text-transform:uppercase;transition:transform .12s cubic-bezier(.3,.7,.3,1), box-shadow .16s ease, filter .16s ease" style-hover="filter:brightness(1.05);transform:translateY(-2px);box-shadow:0 18px 38px rgba(212,175,55,.44), inset 0 1px 0 rgba(255,250,228,.75)" style-active="transform:translateY(2px) scale(.992);box-shadow:0 5px 14px rgba(212,175,55,.3), inset 0 3px 8px rgba(120,86,16,.55)">⟳ Перекатить</button>
+
+          <div style="display:flex;gap:12px">
+            <button onClick="{{ randomAll }}" style="flex:1;background:linear-gradient(180deg,rgba(212,175,55,.07),rgba(212,175,55,.02));color:#e8d9b4;border:1px solid rgba(212,175,55,.34);border-radius:8px;padding:14px;font-family:'Space Grotesk';font-size:13px;font-weight:600;cursor:pointer;letter-spacing:.4px;transition:transform .12s cubic-bezier(.3,.7,.3,1), background .15s ease, border-color .15s ease" style-hover="background:linear-gradient(180deg,rgba(212,175,55,.17),rgba(212,175,55,.06));border-color:#caa23d;transform:translateY(-1px)" style-active="transform:translateY(1px) scale(.99)">Случайная мозоль</button>
+            <button onClick="{{ download }}" style="flex:1;background:linear-gradient(180deg,rgba(212,175,55,.07),rgba(212,175,55,.02));color:#e8d9b4;border:1px solid rgba(212,175,55,.34);border-radius:8px;padding:14px;font-family:'Space Grotesk';font-size:13px;font-weight:600;cursor:pointer;letter-spacing:.4px;transition:transform .12s cubic-bezier(.3,.7,.3,1), background .15s ease, border-color .15s ease" style-hover="background:linear-gradient(180deg,rgba(212,175,55,.17),rgba(212,175,55,.06));border-color:#caa23d;transform:translateY(-1px)" style-active="transform:translateY(1px) scale(.99)">Скачать PNG</button>
+          </div>
+
+          <div style="background:#16130e;border:1px solid rgba(212,175,55,.16);border-radius:8px;padding:18px 20px;display:flex;flex-direction:column;gap:14px">
+            <label style="display:flex;flex-direction:column;gap:6px">
+              <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8a8170">Ваша подпись на табличке</span>
+              <input value="{{ signature }}" onInput="{{ onSig }}" placeholder="напр.: из коллекции И. Петрова" maxLength="42" style="background:#0e0d0b;color:#efe7d4;border:1px solid rgba(212,175,55,.22);border-radius:5px;padding:11px 12px;font-family:'Space Grotesk';font-size:13.5px;outline:none" style-focus="border-color:#d4af37"/>
+            </label>
+            <button onClick="{{ openShare }}" style="background:linear-gradient(180deg,#3c151b,#290e12);color:#f3cdc4;border:1px solid #7a1420;border-radius:8px;padding:14px;font-family:'Space Grotesk';font-size:14px;font-weight:600;cursor:pointer;letter-spacing:.5px;box-shadow:inset 0 1px 0 rgba(255,180,160,.12);transition:transform .12s cubic-bezier(.3,.7,.3,1), filter .15s ease, box-shadow .15s ease" style-hover="filter:brightness(1.2);transform:translateY(-1px);box-shadow:0 10px 22px rgba(122,20,32,.42)" style-active="transform:translateY(1px) scale(.99)">Подарить мозоль страдальцу →</button>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <!-- ОВЕРЛЕЙ ТРИУМФА -->
+    <div onClick="{{ dismissCelebrate }}" style="{{ celOverlayStyle }}">
+      <div style="{{ celRayStyle }}"></div>
+      <div style="position:relative;text-align:center;{{ celBlock }}">
+        <div style="font-family:'Space Mono',monospace;font-size:13px;letter-spacing:6px;color:#f3e7c8;text-transform:uppercase;opacity:.85;margin-bottom:10px">{{ celStars }}</div>
+        <div style="font-family:'Playfair Display',serif;font-weight:800;font-size:clamp(40px,8vw,92px);line-height:1;letter-spacing:1px;color:{{ celColor }};text-shadow:0 0 30px rgba(0,0,0,.6),0 4px 0 rgba(0,0,0,.35)">{{ celCheer }}</div>
+        <div style="font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(18px,3vw,28px);color:#f3e7c8;margin-top:14px">{{ celSub }}</div>
+        <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;color:#cdc3aa;text-transform:uppercase;margin-top:18px;opacity:.7">нажмите, чтобы продолжить</div>
+      </div>
+    </div>
+
+    <!-- МАГАЗИН -->
+    <sc-if value="{{ shopOpen }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closeShop }}" style="position:fixed;inset:0;z-index:50;background:rgba(8,7,6,.78);display:flex;align-items:center;justify-content:center;padding:24px">
+        <div onClick="{{ stop }}" style="background:#16130e;border:1px solid rgba(212,175,55,.28);border-radius:12px;max-width:760px;width:100%;max-height:88vh;overflow:auto;padding:28px">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:6px">
+            <div>
+              <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:#f3e7c8">Лавка премиум-стилей</div>
+              <div style="font-family:'Space Mono',monospace;font-size:11px;color:#8a8170;letter-spacing:1px;margin-top:4px">примерьте редкую огранку к своей мозоли</div>
+            </div>
+            <button onClick="{{ closeShop }}" style="background:transparent;border:1px solid rgba(212,175,55,.3);color:#d4af37;border-radius:50%;width:36px;height:36px;font-size:18px;cursor:pointer;flex:none">✕</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin:14px 0 20px;font-family:'Space Mono',monospace;font-size:13px;color:#e3d4a4">Баланс: <span style="color:#d4af37;font-weight:700">{{ balance }} ₥</span></div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px">
+            <sc-for list="{{ premiumTiles }}" as="t" hint-placeholder-count="6">
+              <div style="border:1px solid rgba(212,175,55,.18);border-radius:9px;padding:16px;background:#0f0d0a;display:flex;flex-direction:column;gap:10px">
+                <div style="{{ t.swatch }}">
+                  <sc-if value="{{ t.locked }}" hint-placeholder-val="{{ true }}"><span style="font-size:24px;opacity:.85">🔒</span></sc-if>
+                  <sc-if value="{{ t.owned }}" hint-placeholder-val="{{ false }}"><span style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;color:#1a1208;background:#d4af37;padding:4px 10px;border-radius:999px;font-weight:700">ОТКРЫТО</span></sc-if>
+                </div>
+                <div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:600;color:#f3e7c8">{{ t.label }}</div>
+                <div style="font-family:'Space Mono',monospace;font-size:10.5px;color:#8a8170;line-height:1.5;min-height:28px">{{ t.hint }}</div>
+                <button onClick="{{ t.onBuy }}" style="{{ t.btnStyle }}">{{ t.btnLabel }}</button>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ПОДЕЛИТЬСЯ -->
+    <sc-if value="{{ shareOpen }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closeShare }}" style="position:fixed;inset:0;z-index:55;background:rgba(8,7,6,.78);display:flex;align-items:center;justify-content:center;padding:24px">
+        <div onClick="{{ stop }}" style="background:#16130e;border:1px solid rgba(212,175,55,.3);border-radius:14px;max-width:420px;width:100%;padding:26px">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+            <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#f3e7c8">Подарить страдальцу</div>
+            <button onClick="{{ closeShare }}" style="background:transparent;border:1px solid rgba(212,175,55,.3);color:#d4af37;border-radius:50%;width:34px;height:34px;font-size:17px;cursor:pointer;flex:none">✕</button>
+          </div>
+          <div style="font-family:'Space Mono',monospace;font-size:11px;color:#8a8170;line-height:1.6;margin:10px 0 18px">Уйдёт ссылка на этот экспонат + предложение скачать карточку-картинку, чтобы прикрепить в чат.</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <button onClick="{{ shareTelegram }}" style="background:#229ed9;color:#fff;border:none;border-radius:9px;padding:14px;font-family:'Space Grotesk';font-size:14px;font-weight:600;cursor:pointer;letter-spacing:.5px" style-hover="filter:brightness(1.08)">Telegram</button>
+            <button onClick="{{ shareWhatsApp }}" style="background:#25d366;color:#06351a;border:none;border-radius:9px;padding:14px;font-family:'Space Grotesk';font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.5px" style-hover="filter:brightness(1.06)">WhatsApp</button>
+            <div style="display:flex;gap:10px">
+              <button onClick="{{ copyLink }}" style="flex:1;background:transparent;color:#e3d4a4;border:1px solid rgba(212,175,55,.3);border-radius:9px;padding:13px;font-family:'Space Grotesk';font-size:13px;font-weight:600;cursor:pointer" style-hover="background:rgba(212,175,55,.08)">Копировать ссылку</button>
+              <button onClick="{{ download }}" style="flex:1;background:transparent;color:#e3d4a4;border:1px solid rgba(212,175,55,.3);border-radius:9px;padding:13px;font-family:'Space Grotesk';font-size:13px;font-weight:600;cursor:pointer" style-hover="background:rgba(212,175,55,.08)">Скачать картинку</button>
+            </div>
+            <sc-if value="{{ hasWebShare }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ webShare }}" style="background:linear-gradient(180deg,#e8c252,#caa23d);color:#1a1208;border:none;border-radius:9px;padding:14px;font-family:'Space Grotesk';font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.5px">Поделиться картинкой…</button>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+
+  <!-- ====================== АУКЦИОННЫЙ ЗАЛ ====================== -->
+  <div style="{{ hallStyle }}">
+    <div style="min-height:100vh;background:repeating-linear-gradient(45deg, rgba(247,228,168,.014) 0 1px, transparent 1px 6px), repeating-linear-gradient(-45deg, rgba(0,0,0,.045) 0 1px, transparent 1px 6px), radial-gradient(1200px 700px at 50% -10%, #1c1812 0%, #100f0d 62%);padding:0 0 64px">
+      <header style="max-width:1200px;margin:0 auto;padding:20px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid rgba(212,175,55,.16)">
+        <button onClick="{{ gotoIntro }}" style="background:transparent;border:1px solid rgba(212,175,55,.3);color:#e3d4a4;border-radius:999px;padding:9px 16px;font-family:'Space Grotesk';font-size:13px;font-weight:600;cursor:pointer" style-hover="background:rgba(212,175,55,.08)">‹ Меню</button>
+        <div style="text-align:center">
+          <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:700;letter-spacing:3px;color:#f3e7c8">Аукционный зал</div>
+          <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;color:#8a8170;text-transform:uppercase">ваша коллекция · {{ collectionCount }} лотов</div>
+        </div>
+        <button onClick="{{ gotoGenerator }}" style="background:linear-gradient(180deg,#e8c252,#caa23d);color:#1a1208;border:none;border-radius:999px;padding:9px 16px;font-family:'Space Grotesk';font-size:13px;font-weight:700;cursor:pointer">К генерации</button>
+      </header>
+      <main style="max-width:1200px;margin:0 auto;padding:28px">
+        <sc-if value="{{ hallEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="text-align:center;padding:90px 20px;color:#8a8170">
+            <div style="font-family:'Playfair Display',serif;font-style:italic;font-size:24px;color:#cdc3aa">Зал пока пуст</div>
+            <div style="font-family:'Space Mono',monospace;font-size:12px;margin-top:10px">сгенерируйте мозоли — и они займут места на торгах</div>
+            <button onClick="{{ gotoGenerator }}" style="margin-top:24px;background:linear-gradient(180deg,#e8c252,#caa23d);color:#1a1208;border:none;border-radius:9px;padding:14px 28px;font-family:'Space Grotesk';font-size:14px;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase">Начать коллекцию</button>
+          </div>
+        </sc-if>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:18px">
+          <sc-for list="{{ hallLots }}" as="lot" hint-placeholder-count="8">
+            <div onClick="{{ lot.onClick }}" style="background:linear-gradient(165deg,#1b1710,#141009);border:1px solid {{ lot.border }};border-radius:8px;padding:12px;cursor:pointer;display:flex;flex-direction:column;gap:8px" style-hover="transform:translateY(-3px)">
+              <div style="position:relative;aspect-ratio:1/1;border-radius:4px;overflow:hidden;background:#0d0c0a">
+                <div style="position:absolute;inset:0;z-index:1" dangerouslySetInnerHTML="{{ lot.art }}"></div>
+                <div style="position:absolute;inset:0;z-index:2;pointer-events:none" dangerouslySetInnerHTML="{{ lot.frame }}"></div>
+              </div>
+              <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:#f3e7c8;line-height:1.2;text-align:center">«{{ lot.folk }}»</div>
+              <div style="text-align:center;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;color:{{ lot.color }};text-transform:uppercase">{{ lot.rl }} {{ lot.stars }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ТОСТ -->
+  <sc-if value="{{ toastVisible }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;left:50%;bottom:34px;z-index:90;background:#1b1711;border:1px solid rgba(212,175,55,.45);color:#f3e7c8;padding:13px 22px;border-radius:999px;font-family:'Space Grotesk';font-size:13.5px;box-shadow:0 14px 40px rgba(0,0,0,.5);transform:translateX(-50%);white-space:nowrap">{{ toastMsg }}</div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  ls = (k, d) => { try { const v = localStorage.getItem('kallozey_' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } };
+  save = (k, v) => { try { localStorage.setItem('kallozey_' + k, JSON.stringify(v)); } catch (e) {} };
+
+  state = {
+    ready: false, screen: 'intro',
+    introProgress: 0,
+    generating: false, genProgress: 0,
+    callus: null,
+    config: { originId: 1 + Math.floor(Math.random() * 40), seed: (Math.random() * 0xffffffff) >>> 0, styleKey: 'heraldry' },
+    celebrate: null, celebrateProgress: 0,
+    balance: this.ls('balance', 500),
+    count: this.ls('count', 0),
+    unlocks: this.ls('unlocks', []),
+    signature: this.ls('sig', ''),
+    collection: this.ls('collection', []),
+    shopOpen: false, shareOpen: false,
+    toast: { visible: false, msg: '' },
+    artKey: 0,
+  };
+
+  componentDidMount() {
+    import('./kallozey-engine.js').then((E) => {
+      this.E = E;
+      let cfg = { ...this.state.config };
+      let startScreen = 'intro';
+      const h = location.hash;
+      const m = (k) => { const r = new RegExp(k + '=([^&]+)').exec(h); return r ? decodeURIComponent(r[1]) : null; };
+      if (h && m('s')) {
+        cfg.originId = +m('o') || cfg.originId; cfg.seed = (+m('s')) >>> 0; cfg.styleKey = m('sy') || 'heraldry';
+        startScreen = 'generator';
+      } else {
+        cfg.originId = 1 + Math.floor(Math.random() * 40); cfg.seed = E.rollSeed();
+        cfg.styleKey = ['heraldry', 'botanical', 'topo'][Math.floor(Math.random() * 3)];
+      }
+      if (this.ls('balance', null) == null) { this.save('balance', 500); this.setState({ balance: 500 }); }
+      const today = new Date().toISOString().slice(0, 10);
+      if (this.ls('lastday', null) !== today) {
+        this.save('lastday', today);
+        if (this.ls('balance', null) != null) { const b = this.state.balance + 30; this.save('balance', b); this.setState({ balance: b }); setTimeout(() => this.toast('Ежедневный заход: +30 ₥'), 1600); }
+      }
+      this.setState({ ready: true, config: cfg, screen: startScreen }, () => {
+        this.doGenerate(startScreen === 'generator' ? 'init' : 'silent');
+        if (startScreen === 'intro') this.runIntro();
+      });
+    });
+  }
+  componentWillUnmount() { clearInterval(this._giv); clearInterval(this._iiv); clearInterval(this._civ); clearInterval(this._fxiv); clearInterval(this._rviv); clearTimeout(this._tt); }
+
+  ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+  back(t) { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); }
+
+  // requestAnimationFrame не срабатывает в фоне предпросмотра — двигаем анимации таймером.
+  _anim(key, dur, setter, done) {
+    clearInterval(this[key]);
+    const start = performance.now();
+    this[key] = setInterval(() => {
+      const p = Math.min(1, (performance.now() - start) / dur);
+      setter(p);
+      if (p >= 1) { clearInterval(this[key]); this[key] = null; if (done) done(); }
+    }, 16);
+  }
+
+  runIntro() {
+    this.setState({ introProgress: 0 });
+    this._anim('_iiv', 1700, (p) => this.setState({ introProgress: p }));
+  }
+
+  valanceSVG() {
+    const W = 1200, swags = 7, sw = W / swags; let b = '';
+    b += `<rect x="0" y="0" width="${W}" height="30" fill="url(#vg)"/><rect x="0" y="28" width="${W}" height="4" fill="#caa23d"/>`;
+    for (let i = 0; i < swags; i++) {
+      const x0 = i * sw, x1 = x0 + sw, xm = x0 + sw / 2;
+      b += `<path d="M${x0} 12 L${x1} 12 L${x1} 30 Q${xm.toFixed(0)} 118 ${x0} 30 Z" fill="url(#vg)" stroke="#9a1620" stroke-width="1"/>`;
+      b += `<path d="M${(x0 + sw * 0.3).toFixed(0)} 26 Q${xm.toFixed(0)} 96 ${(x1 - sw * 0.3).toFixed(0)} 26" fill="none" stroke="rgba(15,2,4,.5)" stroke-width="3"/>`;
+      b += `<path d="M${(x0 + sw * 0.14).toFixed(0)} 24 Q${xm.toFixed(0)} 108 ${(x1 - sw * 0.14).toFixed(0)} 24" fill="none" stroke="rgba(255,228,180,.10)" stroke-width="2"/>`;
+      b += `<path d="M${x1} 30 Q${xm.toFixed(0)} 118 ${x0} 30" fill="none" stroke="#d8b24a" stroke-width="3"/>`;
+    }
+    for (let i = 0; i <= swags; i++) {
+      const x = i * sw;
+      let skirt = '';
+      for (let j = -3; j <= 3; j++) skirt += `<line x1="${j * 2.4}" y1="56" x2="${j * 4.4}" y2="82" stroke="#caa23d" stroke-width="1.5"/>`;
+      b += `<g transform="translate(${x} 30)"><line x1="0" y1="0" x2="0" y2="44" stroke="#caa23d" stroke-width="2.5"/><circle cx="0" cy="50" r="7.5" fill="url(#tg)" stroke="#9a7620" stroke-width="1"/>${skirt}</g>`;
+    }
+    const grad = '<linearGradient id="vg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8e1623"/><stop offset="0.5" stop-color="#6e1019"/><stop offset="1" stop-color="#460c11"/></linearGradient>';
+    return `<svg viewBox="0 0 ${W} 132" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:132px;display:block;filter:drop-shadow(0 8px 14px rgba(0,0,0,.45))"><defs>${grad}<radialGradient id="tg" cx="0.4" cy="0.34" r="0.8"><stop offset="0" stop-color="#f3e2a6"/><stop offset="1" stop-color="#9a7620"/></radialGradient></defs>${b}</svg>`;
+  }
+  skipIntro = () => { clearInterval(this._iiv); this.setState({ introProgress: 1 }); };
+  gotoGenerator = () => { this.setState({ screen: 'generator', shareOpen: false }, () => this.startFx()); if (!this.state.callus) this.doGenerate('init'); };
+  gotoHall = () => { this.stopFx(); this.setState({ screen: 'hall' }); };
+  gotoIntro = () => { this.stopFx(); this.setState({ screen: 'intro' }); this.runIntro(); };
+
+  doGenerate(reason) {
+    if (!this.E) return;
+    const cfg = this.state.config;
+    const callus = this.E.buildCallus({ originId: cfg.originId, seed: cfg.seed });
+    if (reason === 'silent') { this.setState((s) => ({ callus, artKey: s.artKey + 1 })); this.maybeEnrich(callus); return; }
+    const dur = reason === 'init' ? 820 : 720;
+    this.stopFx();
+    this.setState({ generating: true, genProgress: 0, celebrate: null, revealFx: 0, fxPhase: 0 });
+    this._anim('_giv', dur, (p) => this.setState({ genProgress: p }), () => {
+      this.setState((s) => ({ callus, generating: false, artKey: s.artKey + 1 }));
+      this.afterGenerate(callus, reason);
+    });
+  }
+
+  afterGenerate(callus, reason) {
+    const count = this.state.count + 1; this.save('count', count); this.save('cfg', this.state.config);
+    this.setState({ count });
+    this.addToCollection(callus);
+    if (reason === 'reroll') this.earn(2);
+    if (!this.ls('first', false)) { this.save('first', true); this.earn(50, 'Первая мозоль: +50 ₥'); }
+    if (callus.rarity.idx >= 2) this.celebrate(callus.rarity);
+    if (callus.rarity.idx >= 2) { this.setState({ revealFx: 1 }); this._anim('_rviv', 480, (p) => this.setState({ revealFx: 1 - this.ease(p) })); }
+    this.startFx();
+    this.maybeEnrich(callus);
+  }
+
+  startFx() {
+    clearInterval(this._fxiv); this._fxiv = null;
+    const c = this.state.callus;
+    if (!c || this.state.screen !== 'generator') return;
+    const periods = { common: 5200, uncommon: 4400, heroic: 3400, legendary: 2600, mythic: 2000 };
+    const start = performance.now(), period = periods[c.rarity.key] || 4000;
+    this._fxiv = setInterval(() => { this.setState({ fxPhase: ((performance.now() - start) % period) / period }); }, 55);
+  }
+  stopFx() { clearInterval(this._fxiv); this._fxiv = null; if (this.state.fxPhase) this.setState({ fxPhase: 0 }); }
+  perimXY(t) { t = (t % 1 + 1) % 1; const u = t * 4; if (u < 1) return [u * 100, 0]; if (u < 2) return [100, (u - 1) * 100]; if (u < 3) return [(3 - u) * 100, 100]; return [0, (4 - u) * 100]; }
+
+  celebrate(rarity) {
+    const dur = rarity.idx >= 3 ? 2400 : 1800;
+    this.setState({ celebrate: { cheer: rarity.cheer, color: rarity.color, idx: rarity.idx }, celebrateProgress: 0 });
+    this._anim('_civ', dur, (p) => this.setState({ celebrateProgress: p }), () => this.setState({ celebrate: null }));
+  }
+  dismissCelebrate = () => { clearInterval(this._civ); this.setState({ celebrate: null }); };
+
+  addToCollection(callus) {
+    const key = callus.originId + '-' + callus.seed;
+    let col = this.state.collection.filter((x) => x.k !== key);
+    col.unshift({ k: key, o: callus.originId, s: callus.seed, sy: this.state.config.styleKey, folk: callus.name.folk, rk: callus.rarity.key, rl: callus.rarity.label, stars: callus.rarity.stars });
+    col = col.slice(0, 48); this.save('collection', col); this.setState({ collection: col });
+  }
+
+  earn(amount, msg) { const b = this.state.balance + amount; this.save('balance', b); this.setState({ balance: b }); if (msg) this.toast(msg); }
+  toast(msg) { clearTimeout(this._tt); this.setState({ toast: { visible: true, msg } }); this._tt = setTimeout(() => this.setState((s) => ({ toast: { ...s.toast, visible: false } })), 2600); }
+
+  patch(part, reason) { this.setState((s) => ({ config: { ...s.config, ...part } }), () => this.doGenerate(reason)); }
+  reroll = () => this.patch({ seed: this.E.rollSeed() }, 'reroll');
+  randomAll = () => this.patch({ originId: 1 + Math.floor(Math.random() * 40), seed: this.E.rollSeed(), styleKey: ['heraldry', 'botanical', 'topo'][Math.floor(Math.random() * 3)] }, 'random');
+  onOrigin = (e) => this.patch({ originId: +e.target.value }, 'param');
+  selectStyle = (key) => { this.setState((s) => { const config = { ...s.config, styleKey: key }; this.save('cfg', config); return { config, artKey: s.artKey + 1 }; }); };
+  loadLot = (lot) => { this.setState((s) => ({ config: { ...s.config, originId: lot.o, seed: lot.s, styleKey: lot.sy || 'heraldry' }, screen: 'generator' }), () => this.doGenerate('init')); };
+
+  openShop = () => this.setState({ shopOpen: true });
+  closeShop = () => this.setState({ shopOpen: false });
+  openShare = () => this.setState({ shareOpen: true });
+  closeShare = () => this.setState({ shareOpen: false });
+  stop = (e) => e.stopPropagation();
+
+  buy(key) {
+    const p = this.E.PREMIUM_STYLES.find((x) => x.key === key);
+    if (this.state.unlocks.includes(key)) return;
+    if (this.state.balance < p.price) { this.toast('Не хватает Мозобаксов — перекатывайте ещё!'); return; }
+    const balance = this.state.balance - p.price, unlocks = [...this.state.unlocks, key];
+    this.save('balance', balance); this.save('unlocks', unlocks);
+    this.setState({ balance, unlocks });
+    this.toast('Стиль «' + p.label + '» зарезервирован за вами!');
+  }
+  onSig = (e) => { const signature = e.target.value; this.save('sig', signature); this.setState({ signature }); };
+
+  shareLink() { const cfg = this.state.config; return location.origin + location.pathname + '#o=' + cfg.originId + '&s=' + cfg.seed + '&sy=' + cfg.styleKey; }
+  shareText() { const c = this.state.callus; return c ? 'Мне выпала почётная мозоль «' + c.name.folk + '» (' + c.rarity.label + ') в МОЗОЛЕУМе. Зацени и страдай с честью:' : 'Зацени МОЗОЛЕУМ:'; }
+  shareTelegram = () => { window.open('https://t.me/share/url?url=' + encodeURIComponent(this.shareLink()) + '&text=' + encodeURIComponent(this.shareText()), '_blank'); this.toast('Открываю Telegram…'); };
+  shareWhatsApp = () => { window.open('https://wa.me/?text=' + encodeURIComponent(this.shareText() + ' ' + this.shareLink()), '_blank'); this.toast('Открываю WhatsApp…'); };
+  copyLink = () => { const t = this.shareText() + ' ' + this.shareLink(); if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t).then(() => this.toast('Ссылка скопирована'), () => this.toast(this.shareLink())); } else this.toast(this.shareLink()); };
+  webShare = async () => { const c = this.state.callus; if (!c) return; try { const blob = await this.cardBlob(); const file = new File([blob], 'kallozey.png', { type: 'image/png' }); if (navigator.canShare && navigator.canShare({ files: [file] })) await navigator.share({ files: [file], text: this.shareText(), url: this.shareLink() }); else await navigator.share({ text: this.shareText(), url: this.shareLink() }); } catch (e) {} };
+
+  cardBlob() {
+    return new Promise((res, rej) => {
+      const c = this.state.callus; const svg = this.E.buildExportSVG(c, this.state.config.styleKey, this.state.signature);
+      const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' }); const url = URL.createObjectURL(blob);
+      const img = new Image();
+      img.onload = () => { const cv = document.createElement('canvas'); cv.width = 1080; cv.height = 1350; const ctx = cv.getContext('2d'); ctx.fillStyle = '#100f0d'; ctx.fillRect(0, 0, 1080, 1350); ctx.drawImage(img, 0, 0, 1080, 1350); cv.toBlob((b) => { res(b); URL.revokeObjectURL(url); }, 'image/png'); };
+      img.onerror = () => { URL.revokeObjectURL(url); rej(); };
+      img.src = url;
+    });
+  }
+  download = async () => { try { const b = await this.cardBlob(); const c = this.state.callus; const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'kallozey_' + (c.name.folk || 'mozol').replace(/[^a-zа-я0-9]+/gi, '_') + '.png'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); this.toast('Карточка скачана'); } catch (e) { this.toast('Не удалось собрать карточку'); } };
+
+  maybeEnrich(callus) {
+    if (!(window.claude && window.claude.complete)) return;
+    const seed = callus.seed, folk = callus.name.folk;
+    window.claude.complete('Придумай ОДИН короткий абсурдно-пафосный геральдический девиз (3–6 слов, по-русски, без кавычек и пояснений) для шуточной почётной мозоли под названием «' + folk + '».')
+      .then((txt) => { if (!txt) return; const motto = String(txt).trim().replace(/^[«"']+|[»"'.]+$/g, '').split('\n')[0].slice(0, 60); if (motto && this.state.callus && this.state.callus.seed === seed) { const cc = { ...this.state.callus, name: { ...this.state.callus.name, motto } }; this.setState({ callus: cc }); } })
+      .catch(() => {});
+  }
+
+  renderVals() {
+    const E = this.E, s = this.state, c = s.callus, cfg = s.config;
+    const scr = s.screen;
+    const v = {
+      ready: s.ready, screen: scr,
+      balance: s.balance, count: s.count, signature: s.signature,
+      shopOpen: s.shopOpen, shareOpen: s.shareOpen, hasWebShare: typeof navigator !== 'undefined' && !!navigator.share,
+      toastVisible: s.toast.visible, toastMsg: s.toast.msg,
+      reroll: this.reroll, randomAll: this.randomAll, download: this.download,
+      openShop: this.openShop, closeShop: this.closeShop, openShare: this.openShare, closeShare: this.closeShare, stop: this.stop,
+      shareTelegram: this.shareTelegram, shareWhatsApp: this.shareWhatsApp, copyLink: this.copyLink, webShare: this.webShare,
+      onOrigin: this.onOrigin, onSig: this.onSig,
+      gotoGenerator: this.gotoGenerator, gotoHall: this.gotoHall, gotoIntro: this.gotoIntro, skipIntro: this.skipIntro,
+      dismissCelebrate: this.dismissCelebrate,
+      currentOrigin: String(cfg.originId),
+      introStyle: { display: scr === 'intro' ? 'block' : 'none' },
+      genScreenStyle: { display: scr === 'generator' ? 'block' : 'none' },
+      hallStyle: { display: scr === 'hall' ? 'block' : 'none' },
+      collectionCount: s.collection.length,
+      hallEmpty: s.collection.length === 0,
+      artHtml: { __html: '' }, frameHtml: { __html: '' }, sealHtml: { __html: '' }, locatorHtml: { __html: '' },
+      genStyle: { position: 'absolute', inset: 0, zIndex: 6, background: 'rgba(13,12,10,.92)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '22px', opacity: s.generating ? 1 : 0, pointerEvents: s.generating ? 'auto' : 'none', visibility: s.generating ? 'visible' : 'hidden' },
+      genSpin: { transformOrigin: '60px 60px', transform: 'rotate(' + (s.genProgress * 720).toFixed(1) + 'deg)' },
+      valanceHtml: { __html: this._valance || (this._valance = this.valanceSVG()) },
+      monogramHtml: { __html: this._mono || (this._mono = (E ? E.renderMonogram('hdrm') : '')) },
+      genBar: { width: (s.genProgress * 100).toFixed(1) + '%', height: '100%', background: 'linear-gradient(90deg,#caa23d,#e8c252)', borderRadius: '2px' },
+    };
+
+    // интро / занавес — бархат с мягкими складками и бликами
+    const ip = s.introProgress, e = this.ease(ip);
+    const velvet = 'linear-gradient(180deg,#3a070b 0%,#72111b 20%,#5c0e16 52%,#7a1420 76%,#33060a 100%)';
+    const folds = 'repeating-linear-gradient(90deg, rgba(15,2,4,.72) 0px, rgba(15,2,4,0) 17px, rgba(247,228,168,.11) 31px, rgba(15,2,4,0) 45px, rgba(15,2,4,.72) 60px)';
+    const sheen = 'radial-gradient(130% 55% at 50% 6%, rgba(255,232,194,.12), rgba(255,232,194,0) 58%)';
+    const curtainBase = { position: 'absolute', top: 0, height: '100%', width: '53%', backgroundImage: [sheen, folds, velvet].join(', '), boxShadow: 'inset 0 -60px 80px rgba(0,0,0,.5)', zIndex: 20 };
+    v.curtainLeft = { ...curtainBase, left: 0, borderRight: '5px solid #caa23d', transform: 'translateX(' + (-e * 103).toFixed(2) + '%)' };
+    v.curtainRight = { ...curtainBase, right: 0, borderLeft: '5px solid #caa23d', transform: 'translateX(' + (e * 103).toFixed(2) + '%)' };
+    const mp = Math.max(0, Math.min(1, (ip - 0.5) / 0.45));
+    v.introMenuStyle = { display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap', marginTop: '38px', opacity: mp, transform: 'translateY(' + ((1 - mp) * 18).toFixed(1) + 'px)', pointerEvents: mp > 0.5 ? 'auto' : 'none' };
+
+    if (E) {
+      v.originGroups = E.originsByCategory();
+      const chip = (key, label, active) => ({ label, onClick: () => this.selectStyle(key), style: { padding: '10px 14px', borderRadius: '6px', cursor: 'pointer', fontFamily: "'Space Grotesk'", fontSize: '13px', fontWeight: 600, letterSpacing: '.3px', border: '1px solid ' + (active ? '#d4af37' : 'rgba(212,175,55,.25)'), background: active ? 'linear-gradient(180deg,#e8c252,#caa23d)' : 'transparent', color: active ? '#1a1208' : '#cdc3aa', boxShadow: active ? '0 6px 16px rgba(212,175,55,.25)' : 'none', flex: 'none', transition: 'transform .12s cubic-bezier(.3,.7,.3,1), border-color .15s ease, box-shadow .15s ease, color .15s ease' } });
+      v.styleChips = E.FREE_STYLES.map((f) => chip(f.key, f.label, cfg.styleKey === f.key));
+      v.styleChips.push({ label: '＋ Премиум', onClick: this.openShop, style: { padding: '10px 14px', borderRadius: '6px', cursor: 'pointer', fontFamily: "'Space Grotesk'", fontSize: '13px', fontWeight: 600, letterSpacing: '.3px', border: '1px dashed rgba(212,175,55,.4)', background: 'transparent', color: '#d4af37', flex: 'none' } });
+      const bg = {
+        foil: { background: 'linear-gradient(135deg,#3a2e0e,#c9a23a 45%,#5a4a14 60%,#e8c252)' },
+        stained: { background: 'conic-gradient(from 20deg,#7a1420,#1a2e4a,#1f6b4a,#a8801f,#7a1420)' },
+        neon: { background: 'radial-gradient(circle at 40% 40%,#102a3a,#0a0a16)', boxShadow: 'inset 0 0 26px rgba(80,200,255,.4)' },
+        cyano: { background: 'linear-gradient(135deg,#0d2a5c,#1f4f9c)' },
+        oldmaster: { background: 'radial-gradient(circle at 50% 40%,#3a2c1c,#120d08)' },
+        pixel: { background: 'repeating-conic-gradient(#2a2418 0% 25%,#1a160e 0% 50%) 0/22px 22px' },
+      };
+      const swatchBase = { height: '88px', borderRadius: '6px', border: '1px solid rgba(212,175,55,.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' };
+      v.premiumTiles = E.PREMIUM_STYLES.map((p) => { const owned = s.unlocks.includes(p.key); return { label: p.label, hint: p.hint, owned, locked: !owned, swatch: { ...swatchBase, ...(bg[p.key] || {}) }, onBuy: () => this.buy(p.key), btnLabel: owned ? 'В коллекции' : 'Купить · ' + p.price + ' ₥', btnStyle: { border: 'none', borderRadius: '6px', padding: '10px', cursor: owned ? 'default' : 'pointer', fontFamily: "'Space Grotesk'", fontSize: '12.5px', fontWeight: 700, letterSpacing: '.5px', background: owned ? 'rgba(212,175,55,.12)' : 'linear-gradient(180deg,#e8c252,#caa23d)', color: owned ? '#8a8170' : '#1a1208' } }; });
+      v.certTitle = 'ЭКСПОНАТ';
+
+      // зал
+      if (scr === 'hall') {
+        v.hallLots = s.collection.map((lot, i) => {
+          const cc = E.buildCallus({ originId: lot.o, seed: lot.s });
+          const r = cc.rarity;
+          return { folk: lot.folk, rl: lot.rl, stars: '★'.repeat(lot.stars), color: r.color, border: r.color + '55', onClick: () => this.loadLot(lot), art: { __html: E.fullArtSVG(cc, lot.sy || 'heraldry', 'thumb' + i) }, frame: { __html: E.fullFrameSVG(r.key, 'tfr' + i) } };
+        });
+      } else { v.hallLots = []; }
+    }
+
+    // базовые поля витрины (нейтральные значения по умолчанию)
+    v.fxStyle = { display: 'none' };
+    v.nameplateStyle = { display: 'none' };
+    v.sealWrapStyle = { display: 'none' };
+    v.locUpper = '';
+
+    if (c) {
+      const r = c.rarity;
+      v.hasCallus = true;
+      // мемоизация SVG — стабильная идентичность, чтобы fx-тики не перерисовывали холст
+      const mkey = c.seed + '|' + cfg.styleKey + '|' + s.artKey;
+      if (this._memoKey !== mkey) {
+        this._memoKey = mkey;
+        this._memo = {
+          artHtml: { __html: E.fullArtSVG(c, cfg.styleKey, 'live' + s.artKey) },
+          frameHtml: { __html: E.fullFrameSVG(r.key, 'frlive' + s.artKey) },
+          sealHtml: { __html: E.renderSeal('sealLive' + s.artKey, c.cert) },
+        };
+      }
+      v.artHtml = this._memo.artHtml; v.frameHtml = this._memo.frameHtml; v.sealHtml = this._memo.sealHtml;
+      v.certTitle = (c.cert && c.cert.title) || 'ЭКСПОНАТ';
+      v.rarityLabel = r.label; v.rarityColor = r.color;
+      v.starsLit = '★'.repeat(r.stars); v.starsDim = '★'.repeat(5 - r.stars);
+      v.folk = c.name.folk; v.latin = c.name.latin; v.sub = c.name.sub; v.act = c.name.act; v.loc = c.loc;
+      v.locUpper = (c.loc || '').toUpperCase();
+      v.stage = c.stage; v.degree = c.name.degree; v.year = c.name.year; v.motto = c.name.motto;
+      v.hasSig = !!s.signature;
+      v.lotNo = String(c.originId).padStart(2, '0') + '-' + (c.seed % 9000 + 1000);
+
+      // FX по редкости — у каждой свой бегущий блик + пульсирующее сияние периметра + внутренний объём
+      const fxP = s.fxPhase || 0, rv = s.revealFx || 0, pulse = 0.5 + 0.5 * Math.sin(fxP * 6.283);
+      const FX = {
+        common:    { n: 1, g: '212,200,164', ga: 0.40, gsz: 150, rim: '206,192,156', ra: [0.10, 0.20], rb: [10, 18], oc: '184,168,132', oa: [0.08, 0.16], ob: [14, 26] },
+        uncommon:  { n: 2, g: '150,228,188', ga: 0.46, gsz: 150, rim: '95,174,134',  ra: [0.14, 0.26], rb: [12, 22], oc: '79,154,120',  oa: [0.14, 0.26], ob: [18, 36] },
+        heroic:    { n: 2, g: '170,206,250', ga: 0.52, gsz: 160, rim: '111,155,216', ra: [0.16, 0.30], rb: [14, 26], oc: '90,131,194',  oa: [0.18, 0.32], ob: [22, 44] },
+        legendary: { n: 3, g: '255,235,170', ga: 0.66, gsz: 175, rim: '232,194,82',  ra: [0.22, 0.40], rb: [16, 32], oc: '232,194,82',  oa: [0.26, 0.50], ob: [30, 66], gold: true },
+        mythic:    { n: 3, g: '226,158,248', ga: 0.64, gsz: 175, rim: 'flame',        ra: [0.30, 0.52], rb: [18, 34], oc: '192,106,214', oa: [0.32, 0.58], ob: [32, 70] },
+      };
+      const F = FX[r.key] || FX.common;
+      const ob = (F.ob[0] + (F.ob[1] - F.ob[0]) * pulse).toFixed(0);
+      const oa = (F.oa[0] + (F.oa[1] - F.oa[0]) * pulse).toFixed(2);
+      const glow = '0 0 ' + ob + 'px rgba(' + F.oc + ',' + oa + '), 0 0 ' + (ob * 2) + 'px rgba(' + F.oc + ',' + (oa * 0.45).toFixed(2) + '), 0 26px 60px rgba(0,0,0,.55)';
+      // бегущие блики по периметру
+      const glints = [];
+      for (let i = 0; i < F.n; i++) {
+        const [gx, gy] = this.perimXY(fxP + i / F.n);
+        const bright = (F.ga * (0.7 + 0.3 * Math.sin((fxP + i / F.n) * 12.566))).toFixed(2);
+        glints.push('radial-gradient(circle ' + F.gsz + 'px at ' + gx.toFixed(1) + '% ' + gy.toFixed(1) + '%, rgba(' + F.g + ',' + bright + '), rgba(' + F.g + ',0) 62%)');
+      }
+      if (F.gold) { const [lx, ly] = this.perimXY(fxP + 0.5); glints.push('radial-gradient(circle 90px at ' + lx.toFixed(1) + '% ' + ly.toFixed(1) + '%, rgba(255,250,224,.55), rgba(255,250,224,0) 60%)'); }
+      // внутренний ободок (объём)
+      let innerShadow;
+      if (F.rim === 'flame') {
+        const f2 = 0.5 + 0.5 * Math.sin(fxP * 6.283 * 2.7 + 1.3);
+        innerShadow = 'inset 0 0 ' + (18 + 16 * f2).toFixed(0) + 'px rgba(255,132,48,' + (0.34 + 0.30 * f2).toFixed(2) + '), inset 0 0 ' + (34 + 22 * pulse).toFixed(0) + 'px rgba(180,92,216,' + (0.40 + 0.26 * pulse).toFixed(2) + ')';
+      } else {
+        const rb = (F.rb[0] + (F.rb[1] - F.rb[0]) * pulse).toFixed(0);
+        const ra = (F.ra[0] + (F.ra[1] - F.ra[0]) * pulse).toFixed(2);
+        innerShadow = 'inset 0 0 ' + rb + 'px rgba(' + F.rim + ',' + ra + ')';
+      }
+      v.fxStyle = { position: 'absolute', inset: 0, zIndex: 5, pointerEvents: 'none', borderRadius: '3px', background: glints.join(','), boxShadow: innerShadow, mixBlendMode: 'screen' };
+      v.caseStyle = { position: 'relative', background: 'linear-gradient(160deg,#211b15,#16120d)', padding: '22px', borderRadius: '6px', border: '1px solid rgba(212,175,55,.14)', boxShadow: glow, transform: 'scale(' + (1 + rv * 0.11).toFixed(3) + ')', transformOrigin: 'center 42%' };
+      v.nameplateStyle = { position: 'absolute', left: '50%', bottom: '3.6%', transform: 'translateX(-50%)', zIndex: 4, display: 'flex', alignItems: 'center', gap: '9px', background: 'linear-gradient(180deg,#2c2215,#17100a)', border: '1px solid rgba(212,175,55,.5)', borderRadius: '5px', padding: '5px 16px', boxShadow: '0 5px 16px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,236,180,.22), inset 0 -1px 0 rgba(0,0,0,.45)', whiteSpace: 'nowrap' };
+      v.sealWrapStyle = { position: 'absolute', right: '6px', bottom: '6px', width: '104px', height: '104px', zIndex: 7, filter: 'drop-shadow(0 6px 14px rgba(0,0,0,.6))', opacity: s.generating ? 0 : 1, visibility: s.generating ? 'hidden' : 'visible' };
+    } else {
+      v.hasCallus = false; v.rarityLabel = 'экспонат'; v.rarityColor = '#8a8170'; v.starsLit = ''; v.starsDim = '★★★★★';
+      v.caseStyle = { position: 'relative', background: 'linear-gradient(160deg,#211b15,#16120d)', padding: '22px', borderRadius: '6px', border: '1px solid rgba(212,175,55,.14)', boxShadow: '0 26px 60px rgba(0,0,0,.55)' };
+    }
+
+    // триумф
+    const cel = s.celebrate;
+    if (cel) {
+      const cp = s.celebrateProgress, inP = Math.min(1, cp / 0.42), out = cp > 0.82 ? Math.max(0, (1 - cp) / 0.18) : 1;
+      const scl = 0.55 + this.back(inP) * 0.55;
+      v.celOverlayStyle = { position: 'fixed', inset: 0, zIndex: 80, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', cursor: 'pointer', background: 'radial-gradient(circle at 50% 46%, ' + cel.color + '26, rgba(8,7,6,.88))', opacity: out };
+      v.celRayStyle = { position: 'absolute', width: '170vmax', height: '170vmax', borderRadius: '50%', background: 'repeating-conic-gradient(from 0deg, rgba(232,194,82,0) 0deg, rgba(232,194,82,.16) 2.4deg, rgba(232,194,82,0) 5.6deg)', transform: 'rotate(' + (cp * 130).toFixed(1) + 'deg)', opacity: 0.85 * out, WebkitMaskImage: 'radial-gradient(circle, #000 0%, #000 34%, transparent 62%)', maskImage: 'radial-gradient(circle, #000 0%, #000 34%, transparent 62%)' };
+      v.celBlock = 'transform:scale(' + scl.toFixed(3) + ');opacity:' + out.toFixed(3);
+      v.celColor = cel.color; v.celCheer = cel.cheer;
+      v.celStars = c ? '★'.repeat(c.rarity.stars) : '';
+      v.celSub = c ? '«' + c.name.folk + '» · ' + c.rarity.label : '';
+    } else {
+      v.celOverlayStyle = { display: 'none' };
+      v.celRayStyle = { display: 'none' }; v.celBlock = ''; v.celColor = '#e8c252'; v.celCheer = ''; v.celStars = ''; v.celSub = '';
+    }
+    return v;
+  }
+}
+</script>
+</body>
+</html>
