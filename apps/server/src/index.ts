@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import express, { type Request, type Response } from 'express';
+import compression from 'compression';
 import cors from 'cors';
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -14,6 +15,7 @@ const PORT = Number(process.env.PORT) || 8787;
 const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
 
 const app = express();
+app.use(compression()); // gzip/deflate responses (HTML/JS/CSS/JSON) for faster loads
 app.use(express.json({ limit: '64kb' }));
 app.use(
   cors({
