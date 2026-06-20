@@ -733,7 +733,15 @@ export function buildExportSVG(c: Callus, styleKey: string, signature?: string):
   const art = `<svg x="120" y="150" width="840" height="840" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet">${renderArt(c, styleKey, 'exp' + c.seed.toString(36))}</svg>`;
   const frame = `<svg x="120" y="150" width="840" height="840" viewBox="0 0 1000 1000" preserveAspectRatio="none">${renderFrame(c.rarity.key, 'expf')}</svg>`;
   const seal = `<svg x="836" y="834" width="150" height="150" viewBox="0 0 200 200">${renderSeal('exps', c.cert).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')}</svg>`;
-  const locator = `<svg x="150" y="790" width="150" height="150" viewBox="0 0 200 200">${renderLocator(c, 'expl').replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '')}</svg>`;
+  // Location nameplate on the frame's lower rail — matches the on-screen card.
+  const loc = (c.loc || '').toUpperCase();
+  const npW = 360, npH = 66, npX = (W - npW) / 2, npY = 150 + 840 - 96;
+  const nameplate = `<g>
+    <rect x="${npX}" y="${npY}" width="${npW}" height="${npH}" rx="7" fill="#1d160c" stroke="#caa23d" stroke-width="2"/>
+    <rect x="${npX + 3}" y="${npY + 3}" width="${npW - 6}" height="${npH - 6}" rx="5" fill="none" stroke="rgba(255,236,180,0.18)" stroke-width="1"/>
+    <text x="${W / 2}" y="${npY + 25}" font-family="'Space Mono',monospace" font-size="14" letter-spacing="4" fill="#b89a52" text-anchor="middle">ЛОКАЦИЯ</text>
+    <text x="${W / 2}" y="${npY + 52}" font-family="Playfair Display,serif" font-weight="600" font-size="26" letter-spacing="1" fill="#f6ead0" text-anchor="middle">${escapeXml(loc)}</text>
+  </g>`;
   return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
     <rect width="${W}" height="${H}" fill="#100f0d"/>
     <rect x="40" y="40" width="${W - 80}" height="${H - 80}" fill="#16130e" stroke="${r.color}" stroke-width="5" ${r.glow ? `filter="url(#exglow)"` : ''}/>
@@ -749,7 +757,7 @@ export function buildExportSVG(c: Callus, styleKey: string, signature?: string):
     <rect x="120" y="150" width="840" height="840" fill="#0d0c0a" stroke="${r.soft}" stroke-width="2"/>
     ${art}
     ${frame}
-    ${locator}
+    ${nameplate}
     ${seal}
     <text x="${W / 2}" y="1058" font-family="Helvetica,Arial,sans-serif" font-size="26" letter-spacing="6" fill="${r.color}" text-anchor="middle">${r.label.toUpperCase()} · ${starsStr}</text>
     <text x="${W / 2}" y="1118" font-family="Georgia,serif" font-size="56" fill="#efe7d4" text-anchor="middle">«${escapeXml(c.name.folk)}»</text>

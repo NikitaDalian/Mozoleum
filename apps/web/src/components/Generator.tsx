@@ -1,4 +1,4 @@
-import { useMemo, type CSSProperties } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { renderMonogram, originsByCategory, FREE_STYLES } from '@mozoleum/engine';
 import { perimXY } from '../lib/anim';
 import { RawSvg } from './RawSvg';
@@ -34,6 +34,15 @@ export function Generator({ store }: { store: MozoleumStore }) {
   const monogramHtml = useMemo(() => renderMonogram('hdrm'), []);
   const originGroups = useMemo(() => originsByCategory(), []);
 
+  // Track a narrow (stacked) layout so the generation overlay can go full-screen
+  // on phones — otherwise the "Лепка мозоли" animation plays off-screen.
+  const [isNarrow, setIsNarrow] = useState(() => typeof window !== 'undefined' && window.innerWidth < 900);
+  useEffect(() => {
+    const onResize = () => setIsNarrow(window.innerWidth < 900);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
   const hasCallus = !!callus;
   const r = callus?.rarity;
   const rarityLabel = r ? r.label : 'экспонат';
@@ -45,6 +54,7 @@ export function Generator({ store }: { store: MozoleumStore }) {
   const fx = useMemo(() => {
     const defaultCase: CSSProperties = {
       position: 'relative',
+      containerType: 'inline-size',
       background: 'linear-gradient(160deg,#211b15,#16120d)',
       padding: 22,
       borderRadius: 6,
@@ -103,6 +113,7 @@ export function Generator({ store }: { store: MozoleumStore }) {
     };
     const caseStyle: CSSProperties = {
       position: 'relative',
+      containerType: 'inline-size',
       background: 'linear-gradient(160deg,#211b15,#16120d)',
       padding: 22,
       borderRadius: 6,
@@ -119,20 +130,21 @@ export function Generator({ store }: { store: MozoleumStore }) {
       zIndex: 4,
       display: 'flex',
       alignItems: 'center',
-      gap: 9,
+      gap: 'clamp(5px,1.6cqw,9px)',
       background: 'linear-gradient(180deg,#2c2215,#17100a)',
       border: '1px solid rgba(212,175,55,.5)',
       borderRadius: 5,
-      padding: '5px 16px',
+      padding: 'clamp(3px,1cqw,5px) clamp(8px,3.6cqw,16px)',
       boxShadow: '0 5px 16px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,236,180,.22), inset 0 -1px 0 rgba(0,0,0,.45)',
       whiteSpace: 'nowrap',
+      maxWidth: '90%',
     };
     const sealWrapStyle: CSSProperties = {
       position: 'absolute',
-      right: 6,
-      bottom: 6,
-      width: 104,
-      height: 104,
+      right: '1.4%',
+      bottom: '1.4%',
+      width: 'min(104px, 21cqw)',
+      height: 'min(104px, 21cqw)',
       zIndex: 7,
       filter: 'drop-shadow(0 6px 14px rgba(0,0,0,.6))',
       opacity: generating ? 0 : 1,
@@ -141,11 +153,13 @@ export function Generator({ store }: { store: MozoleumStore }) {
     return { caseStyle, fxStyle, nameplateStyle, sealWrapStyle, locUpper: (callus.loc || '').toUpperCase() };
   }, [callus, fxPhase, revealFx, generating]);
 
+  // On phones the showcase is above the controls; promote the generation
+  // overlay to full-screen so the "лепка" spectacle is centred on screen.
   const genStyle: CSSProperties = {
-    position: 'absolute',
+    position: isNarrow ? 'fixed' : 'absolute',
     inset: 0,
-    zIndex: 6,
-    background: 'rgba(13,12,10,.92)',
+    zIndex: isNarrow ? 75 : 6,
+    background: isNarrow ? 'rgba(10,9,7,.96)' : 'rgba(13,12,10,.92)',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -237,9 +251,9 @@ export function Generator({ store }: { store: MozoleumStore }) {
               <RawSvg html={store.memoHtml.frameHtml} style={{ position: 'absolute', inset: 0, zIndex: 3, pointerEvents: 'none' }} />
               <div style={fx.fxStyle} />
               <div style={fx.nameplateStyle}>
-                <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 8.5, letterSpacing: 2.5, color: '#b89a52', textTransform: 'uppercase' }}>Локация</span>
-                <span style={{ width: 1, height: 14, background: 'rgba(212,175,55,.4)' }} />
-                <span style={{ fontFamily: "'Playfair Display',serif", fontSize: 15, fontWeight: 600, color: '#f6ead0', letterSpacing: 0.8, textTransform: 'uppercase' }}>{fx.locUpper}</span>
+                <span style={{ fontFamily: "'Space Mono',monospace", fontSize: 'clamp(7px,2.2cqw,8.5px)', letterSpacing: 2, color: '#b89a52', textTransform: 'uppercase' }}>Локация</span>
+                <span style={{ width: 1, height: 'clamp(9px,2.8cqw,14px)', background: 'rgba(212,175,55,.4)' }} />
+                <span style={{ fontFamily: "'Playfair Display',serif", fontSize: 'clamp(11px,3.4cqw,15px)', fontWeight: 600, color: '#f6ead0', letterSpacing: 0.6, textTransform: 'uppercase', overflow: 'hidden', textOverflow: 'ellipsis' }}>{fx.locUpper}</span>
               </div>
               <div style={genStyle}>
                 <svg width="120" height="120" viewBox="0 0 120 120" style={{ overflow: 'visible' }}>
