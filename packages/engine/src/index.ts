@@ -168,6 +168,7 @@ const LATIN_BY_LOC: Record<string, string> = {
   'костяшки': 'Nodus', 'пальцы ног': 'Digitus Pedis', 'подбородок': 'Mentum',
   'большой палец': 'Pollex', 'ребро ладони': 'Manus Latus', 'лоб': 'Frons',
   'пальцы': 'Digitus', 'обе ладони': 'Manus Gemina',
+  'предплечья': 'Antebrachium',
 };
 
 // Silhouette underlay by location.
@@ -175,6 +176,7 @@ const SIL_BY_LOC: Record<string, string> = {
   'ладонь': 'palm', 'ребро ладони': 'palm', 'обе ладони': 'palms',
   'пальцы': 'fingers', 'кончики пальцев': 'fingers', 'подушечки пальцев': 'fingers', 'костяшки': 'fingers',
   'большой палец': 'thumb', 'пальцы ног': 'foot', 'подбородок': 'face', 'лоб': 'face',
+  'предплечья': 'palm',
 };
 
 // ---------- Origins library (the comedic core) ----------
@@ -200,6 +202,8 @@ export const ORIGINS: Origin[] = [
   { id: 18, g: 'honor', act: 'Гончарный круг',              loc: 'пальцы',            folk: 'Перст Гончара',      sub: 'Гончарный' },
   { id: 19, g: 'honor', act: 'Альпинизм, ледоруб',          loc: 'ладонь',            folk: 'Длань Альпиниста',   sub: 'Ледорубный' },
   { id: 20, g: 'honor', act: 'Парусный спорт, шкоты',       loc: 'ладонь',            folk: 'Шкотовая Мозоль',    sub: 'Парусный' },
+  { id: 41, g: 'honor', act: 'Планка на предплечьях',       loc: 'предплечья',        folk: 'Печать Планкиста',   sub: 'Планочный' },
+  { id: 42, g: 'honor', act: 'Стульчик (присед у стены)',   loc: 'ладонь',            folk: 'Трон Стульчика',     sub: 'Стульчиковый' },
   // Shamefully earned
   { id: 21, g: 'shame', act: 'Скролл ленты большим пальцем', loc: 'большой палец',    folk: 'Мозоль Скроллера',   sub: 'Скролльный' },
   { id: 22, g: 'shame', act: 'Стики геймпада',              loc: 'большой палец',     folk: 'Печать Геймпада',    sub: 'Стиковый' },
@@ -235,7 +239,7 @@ export const CATEGORIES: Category[] = [
   { key: 'digital', label: 'Цифровая дегенерация' },
 ];
 const CAT_OF: Record<number, string> = {
-  1: 'sport', 2: 'sport', 3: 'sport', 4: 'sport', 5: 'sport', 6: 'sport', 7: 'sport', 8: 'sport', 19: 'sport', 20: 'sport',
+  1: 'sport', 2: 'sport', 3: 'sport', 4: 'sport', 5: 'sport', 6: 'sport', 7: 'sport', 8: 'sport', 19: 'sport', 20: 'sport', 41: 'sport', 42: 'sport',
   9: 'art', 10: 'art', 11: 'art', 12: 'art', 13: 'art', 17: 'art', 18: 'art',
   14: 'home', 15: 'home', 16: 'home', 26: 'home', 27: 'home', 32: 'home', 36: 'home', 37: 'home', 38: 'home',
   28: 'office', 29: 'office', 30: 'office', 31: 'office', 40: 'office',

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  ORIGINS,
   buildCallus,
   fullArtSVG,
   fullFrameSVG,
@@ -43,7 +44,7 @@ function randomStyle(): StyleKey {
   return STYLE_KEYS[Math.floor(Math.random() * 3)];
 }
 function randomOriginId(): number {
-  return 1 + Math.floor(Math.random() * 40);
+  return ORIGINS[Math.floor(Math.random() * ORIGINS.length)].id;
 }
 
 export function useMozoleum() {
