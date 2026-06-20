@@ -1,0 +1,35 @@
+name: Deploy
+
+# Auto-deploy to your server on every push to main.
+# Disabled until you opt in: set repository variable DEPLOY_ENABLED = true
+# (Settings → Secrets and variables → Actions → Variables) and add the secrets
+# listed in DEPLOY.md (SSH_HOST, SSH_USER, SSH_KEY, ANTHROPIC_API_KEY).
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: ${{ vars.DEPLOY_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          envs: ANTHROPIC_API_KEY
+          script: |
+            set -e
+            cd ~/Mozoleum
+            ANTHROPIC_API_KEY="$ANTHROPIC_API_KEY" ./deploy.sh

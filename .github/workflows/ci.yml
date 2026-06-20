@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build engine + server + web
+        run: npm run build
+      - name: Smoke-test the renderer (deterministic PNG)
+        run: |
+          node apps/server/dist/cli.js --origin 18 --seed 12345 --style heraldry --out /tmp/ci.png
+          test -s /tmp/ci.png && echo "PNG OK"
