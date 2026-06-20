@@ -1,0 +1,23 @@
+# Render.com blueprint — one web service that serves BOTH the static site and
+# the API (frontend + backend in a single deploy). Push to GitHub, then in
+# Render: New → Blueprint → pick this repo.
+#
+# Set ANTHROPIC_API_KEY in the Render dashboard (Environment) — never commit it.
+services:
+  - type: web
+    name: mozoleum
+    runtime: node
+    plan: starter # cheapest always-on tier; "free" sleeps after inactivity
+    buildCommand: npm install && npm run fonts -w @mozoleum/server && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 22.12.0
+      - key: PORT
+        value: 8787
+      - key: CORS_ORIGIN
+        value: "*"
+      - key: MOTTO_MODEL
+        value: claude-haiku-4-5-20251001
+      - key: ANTHROPIC_API_KEY
+        sync: false # set this secret in the Render dashboard

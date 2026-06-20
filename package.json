@@ -1,0 +1,21 @@
+{
+  "name": "mozoleum",
+  "version": "1.0.0",
+  "private": true,
+  "description": "МОЗОЛЕУМ — satirical auction-house generator of honorary calluses",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @mozoleum/engine && npm run build -w @mozoleum/server && npm run build -w @mozoleum/web",
+    "dev": "npm run build -w @mozoleum/engine && concurrently -k -n server,web -c blue,magenta \"npm:dev:server\" \"npm:dev:web\"",
+    "dev:server": "npm run dev -w @mozoleum/server",
+    "dev:web": "npm run dev -w @mozoleum/web",
+    "start": "npm run start -w @mozoleum/server",
+    "cli": "node apps/server/dist/cli.js"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

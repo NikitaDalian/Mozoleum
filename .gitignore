@@ -1,0 +1,34 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# build output
+dist/
+build/
+*.tsbuildinfo
+
+# env / secrets — NEVER commit real keys
+.env
+.env.local
+.env.*.local
+**/.env
+!.env.example
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# editor / os
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# generated images / scratch
+out/
+*.png
+!apps/web/public/**/*.png
+!project/.thumbnail
